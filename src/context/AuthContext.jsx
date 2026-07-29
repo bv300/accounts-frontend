@@ -6,7 +6,7 @@ import { useQuery } from '@apollo/client/react';
 import { ME } from '../graphql/queries';
 
 const AuthContext = createContext(null);
-
+// No
 export function AuthProvider({ children }) {
     const [token, setToken] = useState(localStorage.getItem('authToken'));
     const { data, loading } = useQuery(ME, { skip: !token });
