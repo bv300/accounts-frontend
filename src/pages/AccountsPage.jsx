@@ -13,7 +13,7 @@ const { Title } = Typography;
 const natureColors = {
     asset: 'blue', liability: 'red', equity: 'purple', revenue: 'green', expense: 'orange',
 };
-
+// code
 export default function AccountsPage() {
     const { companyId } = useCompany();
     const [modalOpen, setModalOpen] = useState(false);
