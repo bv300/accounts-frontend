@@ -1,16 +1,17 @@
 /**
- * Application shell — Ant Design sidebar layout with navigation.
+ * Application shell — responsive sidebar layout with mobile drawer.
  */
-import { Layout, Menu, Typography, Avatar, Dropdown, Space, Select } from 'antd';
+import { useState } from 'react';
+import { Layout, Menu, Typography, Avatar, Dropdown, Space, Select, Drawer, Button } from 'antd';
 import {
     DashboardOutlined, BankOutlined, BookOutlined, ShoppingCartOutlined,
     ShoppingOutlined, WalletOutlined, BarChartOutlined, SettingOutlined,
-    LogoutOutlined, UserOutlined, FileTextOutlined, PercentageOutlined
+    LogoutOutlined, UserOutlined, FileTextOutlined, PercentageOutlined,
+    MenuOutlined
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCompany } from '../context/CompanyContext';
-import { gql } from "@apollo/client";
 import { useQuery } from '@apollo/client/react';
 import { ALL_COMPANIES } from '../graphql/queries';
 import { useEffect } from 'react';
@@ -36,22 +37,49 @@ const menuItems = [
     },
 ];
 
+const SidebarMenu = ({ onNavigate }) => {
+    const location = useLocation();
+    return (
+        <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={[location.pathname]}
+            defaultOpenKeys={['reports']}
+            items={menuItems}
+            onClick={({ key }) => { onNavigate(key); }}
+            style={{ background: 'transparent', borderRight: 'none', marginTop: 8 }}
+        />
+    );
+};
+
+const SidebarLogo = () => (
+    <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+        <Title level={4} style={{ color: '#60a5fa', margin: 0, letterSpacing: '0.5px' }}>
+            📊 AccuBooks
+        </Title>
+        <div style={{ color: '#94a3b8', fontSize: 11, marginTop: 4 }}>Accounting Software</div>
+    </div>
+);
+
 export default function AppLayout() {
     const navigate = useNavigate();
-    const location = useLocation();
     const { user, logout } = useAuth();
     const { companyId, selectCompany } = useCompany();
-    
-    // Fetch all available companies
+    const [drawerOpen, setDrawerOpen] = useState(false);
+
     const { data: companyData } = useQuery(ALL_COMPANIES);
     const companies = companyData?.allCompanies || [];
 
-    // Auto-select the first company if none is currently selected
     useEffect(() => {
         if (!companyId && companies.length > 0) {
             selectCompany(companies[0].id);
         }
     }, [companyId, companies, selectCompany]);
+
+    const handleNavigate = (key) => {
+        navigate(key);
+        setDrawerOpen(false);
+    };
 
     const userMenu = {
         items: [
@@ -65,63 +93,90 @@ export default function AppLayout() {
         },
     };
 
+    const sidebarStyle = {
+        background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)',
+        boxShadow: '2px 0 12px rgba(0,0,0,0.15)',
+    };
+
     return (
         <Layout style={{ minHeight: '100vh' }}>
+            {/* Desktop sidebar */}
             <Sider
                 width={250}
-                style={{
-                    background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)',
-                    boxShadow: '2px 0 12px rgba(0,0,0,0.15)',
-                }}
+                breakpoint="md"
+                collapsedWidth={0}
+                trigger={null}
+                style={sidebarStyle}
             >
-                <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                    <Title level={4} style={{ color: '#60a5fa', margin: 0, letterSpacing: '0.5px' }}>
-                        📊 AccuBooks
-                     </Title>
-                    <div style={{ color: '#94a3b8', fontSize: 11, marginTop: 4 }}>Accounting Software</div>
-                </div>
-                <Menu
-                    theme="dark"
-                    mode="inline"
-                    selectedKeys={[location.pathname]}
-                    items={menuItems}
-                    onClick={({ key }) => navigate(key)}
-                    style={{ background: 'transparent', borderRight: 'none', marginTop: 8 }}
-                />
+                <SidebarLogo />
+                <SidebarMenu onNavigate={handleNavigate} />
             </Sider>
-            <Layout>
+
+            {/* Mobile drawer */}
+            <Drawer
+                placement="left"
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+                width={250}
+                bodyStyle={{ padding: 0, background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)' }}
+                headerStyle={{ display: 'none' }}
+            >
+                <SidebarLogo />
+                <SidebarMenu onNavigate={handleNavigate} />
+            </Drawer>
+
+            <Layout style={{ overflow: 'hidden' }}>
                 <Header style={{
                     background: '#fff',
-                    padding: '0 24px',
+                    padding: '0 12px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
+                    flexWrap: 'wrap',
                     boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
                     zIndex: 10,
+                    gap: 8,
                 }}>
-                    <Space>
-                        <span style={{ fontWeight: 600, color: '#64748b' }}>Active Company:</span>
-                        <Select
-                            placeholder="Select Company"
-                            value={companyId}
-                            onChange={(val) => selectCompany(val)}
-                            style={{ width: 220 }}
-                            options={companies.map(c => ({ value: c.id, label: c.name }))}
+                    {/* Hamburger — only shows on mobile when sidebar collapses */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0, flex: '1 1 auto', flexWrap: 'wrap' }}>
+                        <Button
+                            className="mobile-menu-trigger"
+                            type="text"
+                            icon={<MenuOutlined />}
+                            onClick={() => setDrawerOpen(true)}
+                            style={{ flexShrink: 0 }}
                         />
-                    </Space>
+                        <Space style={{ flexShrink: 0, flexWrap: 'wrap', gap: 4, minWidth: 0 }}>
+                            <span className="header-company-label" style={{ fontWeight: 600, color: '#64748b', whiteSpace: 'nowrap' }}>
+                                Company:
+                            </span>
+                            <Select
+                                placeholder="Select Company"
+                                value={companyId}
+                                onChange={(val) => selectCompany(val)}
+                                style={{ width: 'min(100%, 140px)', minWidth: 110 }}
+                                options={companies.map(c => ({ value: c.id, label: c.name }))}
+                            />
+                        </Space>
+                    </div>
+
                     <Dropdown menu={userMenu} placement="bottomRight">
-                        <Space style={{ cursor: 'pointer' }}>
+                        <Space style={{ cursor: 'pointer', flexShrink: 0 }}>
                             <Avatar style={{ backgroundColor: '#3b82f6' }} icon={<UserOutlined />} />
-                            <span style={{ fontWeight: 500 }}>{user?.firstName || user?.username || 'User'}</span>
+                            <span className="app-header-user-name" style={{ fontWeight: 500, whiteSpace: 'nowrap' }}>
+                                {user?.firstName || user?.username || 'User'}
+                            </span>
                         </Space>
                     </Dropdown>
                 </Header>
+
                 <Content style={{
                     margin: 24,
                     padding: 24,
                     background: '#f8fafc',
                     borderRadius: 12,
                     minHeight: 280,
+                    overflow: 'auto',
                 }}>
                     <Outlet />
                 </Content>
