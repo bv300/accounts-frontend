@@ -42,7 +42,7 @@ body {
   background: #94a3b8;
 }
 
-/* Ant Design overrides */
+/* ── Ant Design overrides ── */
 .ant-layout-sider .ant-menu-dark {
   background: transparent !important;
 }
@@ -85,4 +85,133 @@ body {
 
 .ant-card {
   animation: fadeIn 0.3s ease-out;
+}
+
+/* ── Responsive Helpers ── */
+
+/* Make Ant tables horizontally scrollable on small screens */
+.ant-table-wrapper {
+  overflow-x: auto;
+}
+
+/* Page header row — stack vertically on small screens */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* Search + action button group */
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Mobile drawer overlay */
+.mobile-sider-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+}
+
+/* Mobile hamburger trigger */
+.mobile-menu-trigger {
+  display: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.mobile-menu-trigger:hover {
+  background: #f1f5f9;
+}
+
+/* ── Breakpoints ── */
+
+/* Tablet & below */
+@media (max-width: 768px) {
+  .mobile-menu-trigger {
+    display: flex;
+    align-items: center;
+  }
+
+  .mobile-sider-overlay.visible {
+    display: block;
+  }
+
+  /* Tighten content padding on small screens */
+  .ant-layout-content {
+    margin: 12px !important;
+    padding: 16px !important;
+  }
+
+  /* Header padding */
+  .ant-layout-header {
+    padding: 0 16px !important;
+  }
+
+  /* Reduce modal width to full on mobile */
+  .ant-modal {
+    max-width: calc(100vw - 32px) !important;
+    margin: 16px auto !important;
+  }
+
+  /* Statistic value font size */
+  .ant-statistic-content-value {
+    font-size: 20px !important;
+  }
+
+  /* Stack header row */
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-header-actions {
+    width: 100%;
+  }
+
+  .page-header-actions .ant-input {
+    width: 100% !important;
+  }
+
+  /* Report date pickers full width */
+  .ant-picker {
+    width: 100% !important;
+  }
+
+  /* Report top-row: stack P&L and balance sheet cards */
+  .report-stats-row .ant-col {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Journal entry form journal lines */
+  .journal-line-space {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .ant-layout-content {
+    margin: 8px !important;
+    padding: 12px !important;
+  }
+
+  .ant-table {
+    font-size: 12px;
+  }
+
+  .page-header h3.ant-typography {
+    font-size: 16px !important;
+  }
 }
