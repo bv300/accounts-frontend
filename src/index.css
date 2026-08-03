@@ -215,3 +215,54 @@ body {
     font-size: 16px !important;
   }
 }
+
+/* Very small mobile screens */
+@media (max-width: 320px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .ant-layout-header {
+    padding: 0 8px !important;
+    min-height: 56px;
+  }
+
+  .ant-layout-content {
+    margin: 4px !important;
+    padding: 10px !important;
+  }
+
+  .mobile-menu-trigger {
+    padding: 2px 4px;
+  }
+
+  .ant-table {
+    font-size: 10px;
+  }
+
+  .page-header h3.ant-typography {
+    font-size: 15px !important;
+  }
+
+  .header-company-label {
+    display: none;
+  }
+
+  .app-header-user-name {
+    display: none !important;
+  }
+
+  .ant-select {
+    width: 100% !important;
+    min-width: 0;
+  }
+
+  .ant-modal {
+    max-width: calc(100vw - 12px) !important;
+    margin: 6px auto !important;
+  }
+
+  .ant-statistic-content-value {
+    font-size: 18px !important;
+  }
+}

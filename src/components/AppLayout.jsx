@@ -128,16 +128,17 @@ export default function AppLayout() {
             <Layout style={{ overflow: 'hidden' }}>
                 <Header style={{
                     background: '#fff',
-                    padding: '0 16px',
+                    padding: '0 12px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
+                    flexWrap: 'wrap',
                     boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
                     zIndex: 10,
-                    gap: 12,
+                    gap: 8,
                 }}>
                     {/* Hamburger — only shows on mobile when sidebar collapses */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0, flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0, flex: '1 1 auto', flexWrap: 'wrap' }}>
                         <Button
                             className="mobile-menu-trigger"
                             type="text"
@@ -145,15 +146,15 @@ export default function AppLayout() {
                             onClick={() => setDrawerOpen(true)}
                             style={{ flexShrink: 0 }}
                         />
-                        <Space style={{ flexShrink: 0, flexWrap: 'wrap', gap: 4 }}>
-                            <span style={{ fontWeight: 600, color: '#64748b', whiteSpace: 'nowrap' }}>
+                        <Space style={{ flexShrink: 0, flexWrap: 'wrap', gap: 4, minWidth: 0 }}>
+                            <span className="header-company-label" style={{ fontWeight: 600, color: '#64748b', whiteSpace: 'nowrap' }}>
                                 Company:
                             </span>
                             <Select
                                 placeholder="Select Company"
                                 value={companyId}
                                 onChange={(val) => selectCompany(val)}
-                                style={{ width: 180, minWidth: 120 }}
+                                style={{ width: 'min(100%, 140px)', minWidth: 110 }}
                                 options={companies.map(c => ({ value: c.id, label: c.name }))}
                             />
                         </Space>
@@ -162,7 +163,7 @@ export default function AppLayout() {
                     <Dropdown menu={userMenu} placement="bottomRight">
                         <Space style={{ cursor: 'pointer', flexShrink: 0 }}>
                             <Avatar style={{ backgroundColor: '#3b82f6' }} icon={<UserOutlined />} />
-                            <span style={{ fontWeight: 500, whiteSpace: 'nowrap' }}>
+                            <span className="app-header-user-name" style={{ fontWeight: 500, whiteSpace: 'nowrap' }}>
                                 {user?.firstName || user?.username || 'User'}
                             </span>
                         </Space>
